@@ -1,0 +1,115 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'users/css/style.css' %}">
+
+<div class="dashboard-wrapper">
+    <!-- Left Section: Text Content -->
+    <div class="dashboard-text">
+        <h1>HELLO</h1>
+        <h2>WELCOME, {{ user.username | upper }}</h2>
+        <p>DO YOU WANT TO:</p>
+        <div class="dashboard-buttons">
+            <a href="{% url 'student_job_list' %}" class="btn btn-primary">GET A JOB</a>
+            <a href="{% url 'take_assessment' %}" class="btn btn-outline-dark">TAKE A QUIZ</a>
+        </div>
+    </div>
+
+    <!-- Right Section: Image -->
+    <div class="dashboard-image">
+        <img src="{% static 'users/img/banner/home-right.png' %}" alt="Dashboard Image">
+    </div>
+</div>
+
+<!-- Profile & Other Features -->
+<div class="profile-section">
+    <div class="card">
+        <div class="card-header">
+            <h3>Your Profile</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Roll Number:</strong> {{ user.student_profile.roll_number }}</p>
+            <p><strong>Department:</strong> {{ user.student_profile.department }}</p>
+            <p><strong>Year of Study:</strong> {{ user.student_profile.year_of_study }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Available Jobs -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-black text-white">
+                    <h3 class="card-title">Available Jobs</h3>
+                </div>
+                <div class="card-body">
+                    <p>View jobs relevant to your department.</p>
+                    <a href="{% url 'student_job_list' %}" class="btn btn-dark">Browse Jobs</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Applications -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-black text-white">
+                    <h3 class="card-title">My Applications</h3>
+                </div>
+                <div class="card-body">
+                    <p>Track the status of your job applications.</p>
+                    <a href="{% url 'my_applications' %}" class="btn btn-dark">View Applications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Resume Upload -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-black text-white">
+                    <h3 class="card-title">Resume</h3>
+                </div>
+                <div class="card-body">
+                    {% if request.user.student_profile.resume %}
+                    <p><strong>Current Resume:</strong> {{ request.user.student_profile.resume.name|slice:"8:" }}</p>
+                    <a href="{% url 'resume_upload' %}" class="btn btn-dark">Update Resume</a>
+                    {% else %}
+                    <p>Upload your resume to help us match you with suitable jobs.</p>
+                    <a href="{% url 'resume_upload' %}" class="btn btn-dark">Upload Resume</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Search -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-black text-white">
+                    <h3 class="card-title">Job Search</h3>
+                </div>
+                <div class="card-body">
+                    <p>Search for jobs on LinkedIn and apply directly.</p>
+                    <a href="{% url 'job_scrape' %}" class="btn btn-dark">Search Jobs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Assessment -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-black text-light">
+                <h3 class="card-title">Skills Assessment</h3>
+            </div>
+            <div class="card-body">
+                <p>Take an assessment to identify skills you should develop for your desired career path.</p>
+                <a href="{% url 'take_assessment' %}" class="btn btn-dark">Take Assessment</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

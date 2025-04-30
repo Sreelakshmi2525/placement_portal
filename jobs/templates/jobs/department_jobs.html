@@ -1,0 +1,71 @@
+<!-- jobs/templates/jobs/department_jobs.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Jobs in {{ department.name }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Jobs in {{ department.name }}</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'job_create' %}" class="btn btn-primary">Add New Job</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Company</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Posted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in jobs %}
+                            <tr>
+                                <td><a href="{% url 'job_detail' job.id %}">{{ job.title }}</a></td>
+                                <td>{{ job.company }}</td>
+                                <td>{{ job.location }}</td>
+                                <td>
+                                    {% if job.status == 'active' %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% elif job.status == 'closed' %}
+                                    <span class="badge bg-danger">Closed</span>
+                                    {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ job.date_posted|date:"M d, Y" }}</td>
+                                <td>
+                                    <a href="{% url 'job_detail' job.id %}" class="btn btn-sm btn-info">View</a>
+                                    <a href="{% url 'job_edit' job.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No jobs found for this department.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <a href="{% url 'department_list' %}" class="btn btn-secondary">Back to Departments</a>
+    </div>
+</div>
+{% endblock %}

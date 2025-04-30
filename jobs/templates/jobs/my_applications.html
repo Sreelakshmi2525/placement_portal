@@ -1,0 +1,139 @@
+<!-- jobs/templates/jobs/my_applications.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}My Applications{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>My Applications</h1>
+        <p class="lead">Track the status of all your job applications</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'student_job_list' %}" class="btn btn-primary">Browse Jobs</a>
+    </div>
+</div>
+
+<!-- Debug Information -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5>Debug Info</h5>
+                <p>Username: {{ request.user.username }}</p>
+                <p>Student ID: {{ request.user.student_profile.id }}</p>
+                <p>Internal Applications Count: {{ internal_applications|length }}</p>
+                {% if has_external_apps %}
+                <p>External Applications Count: {{ external_applications|length }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>Internal Job Applications</h3>
+            </div>
+            <div class="card-body">
+                {% if internal_applications %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for app in internal_applications %}
+                                <tr>
+                                    <td>{{ app.job.title }}</td>
+                                    <td>{{ app.job.company }}</td>
+                                    <td>{{ app.applied_date|date:"F d, Y" }}</td>
+                                    <td>
+                                        {% if app.status == 'applied' %}
+                                            <span class="badge bg-primary">Applied</span>
+                                        {% elif app.status == 'under_review' %}
+                                            <span class="badge bg-info">Under Review</span>
+                                        {% elif app.status == 'shortlisted' %}
+                                            <span class="badge bg-warning">Shortlisted</span>
+                                        {% elif app.status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% elif app.status == 'selected' %}
+                                            <span class="badge bg-success">Selected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'student_job_detail' app.job.id %}" class="btn btn-sm btn-info">View Job</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        You haven't applied to any jobs yet. <a href="{% url 'student_job_list' %}">Browse available jobs</a> to get started.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if has_external_apps %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>External Job Applications</h3>
+            </div>
+            <div class="card-body">
+                {% if external_applications %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                    <th>Method</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for app in external_applications %}
+                                <tr>
+                                    <td>{{ app.job_title }}</td>
+                                    <td>{{ app.company }}</td>
+                                    <td>{{ app.application_date|date:"F d, Y" }}</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ app.status|title }}</span>
+                                    </td>
+                                    <td>{{ app.application_method|title }}</td>
+                                    <td>
+                                        <a href="{{ app.job_url }}" target="_blank" class="btn btn-sm btn-info">View Job</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        You haven't applied to any external jobs yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,60 @@
+<!-- jobs/templates/jobs/student_job_list.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Available Jobs{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Available Jobs</h1>
+        <p class="lead">Showing jobs for your department and general positions</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        {% if jobs %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for job in jobs %}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header bg-light">
+                            <h5 class="card-title mb-0">{{ job.title }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">{{ job.company }}</h6>
+                            <p class="card-text">{{ job.location }}</p>
+                            <p class="card-text">{{ job.description|truncatewords:20 }}</p>
+                            
+                            {% if job.salary %}
+                            <p class="card-text"><strong>Salary:</strong> {{ job.salary }}</p>
+                            {% endif %}
+                            
+                            <div class="mt-3">
+                                {% if job.id in applied_jobs %}
+                                <span class="badge bg-success">Already Applied</span>
+                                {% endif %}
+                                
+                                {% for department in job.departments.all %}
+                                <span class="badge bg-info">{{ department.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'student_job_detail' job.id %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                No jobs available for your department at this time. Check back later!
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

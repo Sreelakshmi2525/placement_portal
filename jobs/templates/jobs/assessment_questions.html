@@ -1,0 +1,82 @@
+<!-- jobs/templates/jobs/assessment_questions.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Assessment Questions{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Career Skills Assessment</h1>
+        <p class="lead">Answer the questions below to help us recommend skills for your chosen career path: <strong>{{ assessment.job_type|title }}</strong></p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>Assessment Questions</h3>
+            </div>
+            <div class="card-body">
+                {% if questions %}
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for question in questions %}
+                    <div class="mb-4">
+                        <p class="fw-bold">{{ forloop.counter }}. {{ question.text }}</p>
+                        
+                        {% if question.question_type == 'mcq' %}
+                            <div class="ms-3">
+                                {% for option in question.options.all %}
+                                <div class="form-check">
+                                    <input type="radio" 
+                                           name="question_{{ question.id }}" 
+                                           id="option_{{ option.id }}" 
+                                           value="{{ option.id }}" 
+                                           class="form-check-input" 
+                                           required>
+                                    <label for="option_{{ option.id }}" class="form-check-label">
+                                        {{ option.text }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% elif question.question_type == 'rating' %}
+                            <div class="ms-3">
+                                <div class="btn-group" role="group">
+                                    {% for i in '12345' %}
+                                    <input type="radio" 
+                                           class="btn-check" 
+                                           name="question_{{ question.id }}" 
+                                           id="q{{ question.id }}_{{ i }}" 
+                                           value="{{ i }}" 
+                                           required>
+                                    <label class="btn btn-outline-primary" for="q{{ question.id }}_{{ i }}">{{ i }}</label>
+                                    {% endfor %}
+                                </div>
+                                <div class="d-flex justify-content-between mt-1">
+                                    <span class="small">Beginner</span>
+                                    <span class="small">Expert</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Submit Assessment</button>
+                        <a href="{% url 'take_assessment' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+                {% else %}
+                <div class="alert alert-warning">
+                    No questions available for this assessment type. Please try a different career path.
+                </div>
+                <a href="{% url 'take_assessment' %}" class="btn btn-primary">Go Back</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

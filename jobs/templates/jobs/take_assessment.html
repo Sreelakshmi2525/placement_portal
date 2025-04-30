@@ -1,0 +1,61 @@
+<!-- jobs/templates/jobs/take_assessment.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Skill Assessment{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Career Skills Assessment</h1>
+        <p class="lead">Take this assessment to get personalized skill recommendations for your desired career path.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Select Your Desired Career Path</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Which career path interests you the most?</label>
+                        <select name="job_type" class="form-select" required>
+                            <option value="">-- Select a career path --</option>
+                            <option value="developer">Software Developer</option>
+                            <option value="designer">Designer (UI/UX)</option>
+                            <option value="analyst">Business/Data Analyst</option>
+                            <option value="manager">Project/Product Manager</option>
+                            <option value="data_scientist">Data Scientist</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Start Assessment</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3>Why Take This Assessment?</h3>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Identify your current skill level for your desired career</li>
+                    <li>Get personalized recommendations for skills to develop</li>
+                    <li>Improve your match rate with relevant job opportunities</li>
+                    <li>Create a roadmap for your professional development</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

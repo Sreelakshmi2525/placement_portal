@@ -1,0 +1,78 @@
+<!-- jobs/templates/jobs/job_list.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Job Listings{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Job Listings</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'job_create' %}" class="btn btn-primary">Add New Job</a>
+        <a href="{% url 'job_scrape' %}" class="btn btn-success">Scrape Jobs</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>All Jobs</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Company</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Departments</th>
+                                <th>Posted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in jobs %}
+                            <tr>
+                                <td><a href="{% url 'job_detail' job.id %}">{{ job.title }}</a></td>
+                                <td>{{ job.company }}</td>
+                                <td>{{ job.location }}</td>
+                                <td>
+                                    {% if job.status == 'active' %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% elif job.status == 'closed' %}
+                                    <span class="badge bg-danger">Closed</span>
+                                    {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% for dept in job.departments.all %}
+                                    <span class="badge bg-info">{{ dept.name }}</span>
+                                    {% empty %}
+                                    <span class="badge bg-secondary">None</span>
+                                    {% endfor %}
+                                </td>
+                                <td>{{ job.date_posted|date:"M d, Y" }}</td>
+                                <td>
+                                    <a href="{% url 'job_detail' job.id %}" class="btn btn-sm btn-info">View</a>
+                                    <a href="{% url 'job_edit' job.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="{% url 'job_delete' job.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No jobs found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+<!-- jobs/templates/jobs/job_detail.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}{{ job.title }} - Job Details{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ job.title }}</h1>
+        <h4 class="text-muted">{{ job.company }}</h4>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'job_edit' job.id %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'job_delete' job.id %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'assign_departments' job.id %}" class="btn btn-primary">Assign Departments</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Job Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Status:</div>
+                    <div class="col-md-9">
+                        {% if job.status == 'active' %}
+                        <span class="badge bg-success">Active</span>
+                        {% elif job.status == 'closed' %}
+                        <span class="badge bg-danger">Closed</span>
+                        {% else %}
+                        <span class="badge bg-warning">Pending</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Location:</div>
+                    <div class="col-md-9">{{ job.location }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Salary:</div>
+                    <div class="col-md-9">{{ job.salary|default:"Not specified" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Departments:</div>
+                    <div class="col-md-9">
+                        {% for dept in job.departments.all %}
+                        <span class="badge bg-info">{{ dept.name }}</span>
+                        {% empty %}
+                        <span class="badge bg-secondary">None assigned</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Date Posted:</div>
+                    <div class="col-md-9">{{ job.date_posted|date:"F d, Y - h:i A" }}</div>
+                </div>
+                {% if job.url %}
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Original Job Link:</div>
+                    <div class="col-md-9"><a href="{{ job.url }}" target="_blank">{{ job.url }}</a></div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Description</h3>
+            </div>
+            <div class="card-body">
+                <p>{{ job.description|linebreaks }}</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Requirements</h3>
+            </div>
+            <div class="card-body">
+                <p>{{ job.requirements|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="{% url 'job_list' %}" class="btn btn-secondary">Back to Job List</a>
+    </div>
+</div>
+{% endblock %}

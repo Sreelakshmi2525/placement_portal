@@ -1,0 +1,84 @@
+<!-- jobs/templates/jobs/job_scrape_results.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Job Scrape Results{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Job Scrape Results</h1>
+        <p class="lead">Found {{ scraped_jobs|length }} job listings.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'job_scrape' %}" class="btn btn-primary">New Search</a>
+        {% if not is_student %}
+            <a href="{% url 'job_list' %}" class="btn btn-secondary">Back to Jobs</a>
+        {% else %}
+            <a href="{% url 'student_job_list' %}" class="btn btn-secondary">Back to Jobs</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        {% for job in scraped_jobs %}
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>{{ job.title }}</h3>
+                {% if is_student %}
+                    <div class="btn-group">
+                        <a href="{{ job.url }}" target="_blank" class="btn btn-primary">View on LinkedIn</a>
+                        <form method="post" action="{% url 'auto_apply_to_job' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="job_url" value="{{ job.url }}">
+                            <button type="submit" class="btn btn-success">Auto-Apply</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <form method="post" action="{% url 'save_scraped_job' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="title" value="{{ job.title }}">
+                        <input type="hidden" name="company" value="{{ job.company }}">
+                        <input type="hidden" name="location" value="{{ job.location }}">
+                        <input type="hidden" name="description" value="{{ job.description }}">
+                        <input type="hidden" name="salary" value="{{ job.salary }}">
+                        <input type="hidden" name="url" value="{{ job.url }}">
+                        <button type="submit" class="btn btn-success">Save Job</button>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Company:</div>
+                    <div class="col-md-9">{{ job.company }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Location:</div>
+                    <div class="col-md-9">{{ job.location }}</div>
+                </div>
+                {% if job.salary != 'N/A' and job.salary != 'Check job listing for details' %}
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Salary:</div>
+                    <div class="col-md-9">{{ job.salary }}</div>
+                </div>
+                {% endif %}
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Description:</div>
+                    <div class="col-md-9">{{ job.description|linebreaks }}</div>
+                </div>
+                {% if job.url != '#' %}
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Original Job Link:</div>
+                    <div class="col-md-9"><a href="{{ job.url }}" target="_blank">View on LinkedIn</a></div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-warning">
+            No job listings found. Please try a different search term or location.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

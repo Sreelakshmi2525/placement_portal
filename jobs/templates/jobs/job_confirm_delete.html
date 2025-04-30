@@ -1,0 +1,27 @@
+<!-- jobs/templates/jobs/job_confirm_delete.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Delete Job{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Delete Job</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <p>Are you sure you want to delete the job "{{ job.title }}" at {{ job.company }}?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <a href="{% url 'job_detail' job.id %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

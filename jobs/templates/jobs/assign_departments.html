@@ -1,0 +1,50 @@
+<!-- jobs/templates/jobs/assign_departments.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Assign Departments - {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Assign Departments for "{{ job.title }}"</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Select Departments</label>
+                        <div class="row">
+                            {% for department in departments %}
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input type="checkbox" 
+                                           name="departments" 
+                                           value="{{ department.id }}" 
+                                           id="dept_{{ department.id }}" 
+                                           class="form-check-input"
+                                           {% if department in job.departments.all %}checked{% endif %}>
+                                    <label for="dept_{{ department.id }}" class="form-check-label">
+                                        {{ department.name }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Save Assignments</button>
+                        <a href="{% url 'job_detail' job.id %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

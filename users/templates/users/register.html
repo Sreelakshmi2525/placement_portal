@@ -1,0 +1,64 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Register as Student - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Student Registration</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">  <!-- Added enctype for image upload -->
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" id="id_username" required>
+                        {{ form.username.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" id="id_email" required>
+                        {{ form.email.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_roll_number" class="form-label">Roll Number</label>
+                        <input type="text" name="roll_number" class="form-control" id="id_roll_number" required>
+                        {{ form.roll_number.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_department" class="form-label">Department</label>
+                        <input type="text" name="department" class="form-control" id="id_department" required>
+                        {{ form.department.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_year_of_study" class="form-label">Year of Study</label>
+                        <input type="number" name="year_of_study" class="form-control" id="id_year_of_study" min="1" max="5" required>
+                        {{ form.year_of_study.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_image" class="form-label">Profile Image</label>  <!-- Added image input -->
+                        <input type="file" name="image" class="form-control" id="id_image" accept="image/*">
+                        {{ form.image.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_password1" class="form-label">Password</label>
+                        <input type="password" name="password1" class="form-control" id="id_password1" required>
+                        {{ form.password1.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_password2" class="form-label">Confirm Password</label>
+                        <input type="password" name="password2" class="form-control" id="id_password2" required>
+                        {{ form.password2.errors }}
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="background-image: linear-gradient(to right, #4458dc 0%, #854fee 100%), radial-gradient(circle at top left, #4458dc, #854fee);">Register</button>
+                </form>
+                <div class="mt-3">
+                    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

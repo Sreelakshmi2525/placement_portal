@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+{% block title %}Profile - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>My Profile</h2>
+
+    <!-- Display Success Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body text-center">
+            <img src="{{ profile.image.url }}" alt="Profile Picture" class="rounded-circle" width="150">
+            <h4 class="mt-3">{{ user.username }}</h4>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Roll Number:</strong> {{ profile.roll_number }}</p>
+            <p><strong>Department:</strong> {{ profile.department }}</p>
+            <p><strong>Year of Study:</strong> {{ profile.year_of_study }}</p>
+
+            <!-- Profile Picture Update Form -->
+            <form method="POST" enctype="multipart/form-data" class="mt-3">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Update Profile Picture</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+<!-- jobs/templates/jobs/student_job_detail.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}{{ job.title }} - Details{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ job.title }}</h1>
+        <h4 class="text-muted">{{ job.company }}</h4>
+        {% if job_match_score %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>Your Job Match Score</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Match Score: {{ job_match_score }}%</h4>
+                        <div class="progress mb-3">
+                            <div class="progress-bar 
+                                {% if job_match_score >= 80 %}bg-success
+                                {% elif job_match_score >= 60 %}bg-info
+                                {% elif job_match_score >= 40 %}bg-warning
+                                {% else %}bg-danger{% endif %}"
+                                role="progressbar"
+                                style="width: {{ job_match_score }}%"
+                                aria-valuenow="{{ job_match_score }}"
+                                aria-valuemin="0"
+                                aria-valuemax="100"></div>
+                        </div>
+                        
+                        {% if job_match_score >= 80 %}
+                            <p>Excellent match! Your profile aligns very well with this job.</p>
+                        {% elif job_match_score >= 60 %}
+                            <p>Good match! You have many of the skills needed for this position.</p>
+                        {% elif job_match_score >= 40 %}
+                            <p>Moderate match. Consider developing some key skills to improve your chances.</p>
+                        {% else %}
+                            <p>This job may require skills that are different from your current profile.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {% if missing_skills %}
+                            <h4>Skills to Develop:</h4>
+                            <ul>
+                                {% for skill in missing_skills %}
+                                    <li>{{ skill }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% elif not request.user.student_profile.resume %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="alert alert-warning">
+            <strong>Tip:</strong> Upload your resume to see how well your skills match with this job! 
+            <a href="{% url 'resume_upload' %}" class="alert-link">Upload Now</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+    </div>
+    
+    <div class="col-md-4 text-end">
+        {% if already_applied %}
+            <span class="btn btn-success disabled">Already Applied</span>
+        {% else %}
+            <a href="{% url 'apply_for_job' job.id %}" class="btn btn-primary">Apply Now</a>
+        {% endif %}
+        <a href="{% url 'student_job_list' %}" class="btn btn-secondary">Back to Jobs</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Job Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Location:</div>
+                    <div class="col-md-9">{{ job.location }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Salary:</div>
+                    <div class="col-md-9">{{ job.salary|default:"Not specified" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Departments:</div>
+                    <div class="col-md-9">
+                        {% for dept in job.departments.all %}
+                        <span class="badge bg-info">{{ dept.name }}</span>
+                        {% empty %}
+                        <span class="badge bg-secondary">Open to all departments</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 fw-bold">Posted:</div>
+                    <div class="col-md-9">{{ job.date_posted|date:"F d, Y" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Description</h3>
+            </div>
+            <div class="card-body">
+                <p>{{ job.description|linebreaks }}</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Requirements</h3>
+            </div>
+            <div class="card-body">
+                <p>{{ job.requirements|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

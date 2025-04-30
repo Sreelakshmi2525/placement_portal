@@ -1,0 +1,60 @@
+<!-- jobs/templates/jobs/email_log.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Email History{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Email History</h1>
+        <p class="lead">Record of emails sent to companies.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'send_email' %}" class="btn btn-primary">Send New Email</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                {% if emails %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Recipient</th>
+                                    <th>Subject</th>
+                                    <th>Related Job</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for email in emails %}
+                                <tr>
+                                    <td>{{ email.sent_at|date:"M d, Y H:i" }}</td>
+                                    <td>{{ email.recipient }}</td>
+                                    <td>{{ email.subject }}</td>
+                                    <td>
+                                        {% if email.job %}
+                                        <a href="{% url 'job_detail' email.job.id %}">{{ email.job.title }} at {{ email.job.company }}</a>
+                                        {% else %}
+                                        --
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        You haven't sent any emails yet. <a href="{% url 'send_email' %}">Send your first email</a>.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

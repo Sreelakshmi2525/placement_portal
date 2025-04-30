@@ -1,0 +1,34 @@
+<!-- jobs/templates/jobs/department_form.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}{% if department %}Edit{% else %}Create{% endif %} Department{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>{% if department %}Edit{% else %}Create{% endif %} Department</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Department Name</label>
+                        <input type="text" name="name" id="id_name" class="form-control" value="{% if department %}{{ department.name }}{% endif %}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <a href="{% url 'department_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

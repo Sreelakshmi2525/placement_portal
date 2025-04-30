@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+{% block title %}Student Profiles{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">Student Profiles</h2>
+        <span class="badge bg-info fs-5">Total Students: {{ students|length }}</span>
+    </div>
+
+    <div class="row">
+        {% for student in students %}
+        <div class="col-md-4 mb-4">
+            <div class="card text-center shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <img src="{{ student.image.url }}" 
+                         alt="Profile Image" 
+                         class="rounded-circle border border-secondary p-1 mb-3" 
+                         width="120" 
+                         height="120"
+                         style="object-fit: cover;">
+
+                    <h5 class="fw-bold text-dark">{{ student.user.username }}</h5>
+                    <p class="text-muted"><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+                    <p class="text-muted"><strong>Department:</strong> {{ student.department }}</p>
+                    <p class="text-muted"><strong>Year:</strong> {{ student.year_of_study }}</p>
+
+                    {% if student.resume %}
+                        <a href="{{ student.resume.url }}" class="btn btn-success btn-sm" download>
+                            <i class="fas fa-download"></i> Download Resume
+                        </a>
+                    {% else %}
+                        <p class="text-muted fst-italic">No Resume Uploaded</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="text-muted">No student profiles available.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,139 @@
+<!-- jobs/templates/jobs/send_email.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Send Email{% if job %} - {{ job.title }}{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Send Email{% if job %} about {{ job.title }}{% endif %}</h1>
+        {% if job %}
+        <p class="lead">Contacting {{ job.company }} about the {{ job.title }} position.</p>
+        {% endif %}
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'email_template_list' %}" class="btn btn-secondary">Manage Templates</a>
+        {% if job %}
+        <a href="{% url 'job_detail' job.id %}" class="btn btn-info">Back to Job</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Email Form</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_template" class="form-label">Use Template</label>
+                        {{ form.template.errors }}
+                        <select name="template" id="id_template" class="form-select">
+                            <option value="">-- Select a template --</option>
+                            {% for template in form.template.field.queryset %}
+                            <option value="{{ template.id }}">{{ template.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">Select a template to auto-fill subject and content.</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_recipient" class="form-label">To</label>
+                        {{ form.recipient.errors }}
+                        <input type="email" name="recipient" id="id_recipient" class="form-control" value="{{ form.recipient.value|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_cc" class="form-label">CC (Optional)</label>
+                        {{ form.cc.errors }}
+                        <input type="email" name="cc" id="id_cc" class="form-control" value="{{ form.cc.value|default:'' }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_subject" class="form-label">Subject</label>
+                        {{ form.subject.errors }}
+                        <input type="text" name="subject" id="id_subject" class="form-control" value="{{ form.subject.value|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_content" class="form-label">Message</label>
+                        {{ form.content.errors }}
+                        <textarea name="content" id="id_content" class="form-control" rows="10" required>{{ form.content.value|default:'' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Send Email</button>
+                        {% if job %}
+                        <a href="{% url 'job_detail' job.id %}" class="btn btn-secondary">Cancel</a>
+                        {% else %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3>Tips for Effective Emails</h3>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Keep your subject line clear and specific</li>
+                    <li>Introduce yourself and your institution</li>
+                    <li>Explain your purpose early in the email</li>
+                    <li>Be concise and professional</li>
+                    <li>Include a call to action</li>
+                    <li>End with a professional signature</li>
+                </ul>
+            </div>
+        </div>
+        
+        {% if job %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Job Details</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Title:</strong> {{ job.title }}</p>
+                <p><strong>Company:</strong> {{ job.company }}</p>
+                <p><strong>Location:</strong> {{ job.location }}</p>
+                {% if job.salary %}
+                <p><strong>Salary:</strong> {{ job.salary }}</p>
+                {% endif %}
+                <p><strong>Status:</strong> {{ job.get_status_display }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const templateSelect = document.getElementById('id_template');
+        const subjectInput = document.getElementById('id_subject');
+        const contentInput = document.getElementById('id_content');
+        
+        templateSelect.addEventListener('change', function() {
+            const templateId = this.value;
+            if (templateId) {
+                fetch(`/api/template/${templateId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        subjectInput.value = data.subject;
+                        contentInput.value = data.content;
+                    })
+                    .catch(error => console.error('Error loading template:', error));
+            }
+        });
+    });
+</script>
+{% endblock %}

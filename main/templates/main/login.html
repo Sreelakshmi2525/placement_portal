@@ -1,0 +1,76 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Login - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Welcome Section -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold text-primary">Welcome to Placement Portal</h1>
+        <p class="lead text-secondary">Connecting students with job opportunities</p>
+    </div>
+
+    <!-- Login Cards -->
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center" style="background: linear-gradient(to right, #4458dc, #854fee);">
+                    <h3 class="fw-bold">For Students</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p>Access job listings, apply to opportunities, and track your applications.</p>
+                    <button class="btn btn-primary btn-lg px-4" data-bs-toggle="modal" data-bs-target="#loginModal" style="background: linear-gradient(to right, #4458dc, #854fee); border: none;">
+                        Student Login
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5 mt-4 mt-md-0">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center" style="background: linear-gradient(to right, #28a745, #34d399);">
+                    <h3 class="fw-bold">For Placement Officers</h3>
+                </div>
+                <div class="card-body text-center">
+                    <p>Manage job listings, review applications, and connect with companies.</p>
+                    <button class="btn btn-success btn-lg px-4" data-bs-toggle="modal" data-bs-target="#loginModal" style="background: linear-gradient(to right, #28a745, #34d399); border: none;">
+                        Officer Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label fw-bold">Username</label>
+                            <input type="text" name="username" class="form-control" id="id_username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label fw-bold">Password</label>
+                            <input type="password" name="password" class="form-control" id="id_password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100" style="background: linear-gradient(to right, #4458dc, #854fee); border: none;">
+                            Login
+                        </button>
+                    </form>
+                    <div class="mt-3 text-center">
+                        <p>Don't have an account? <a href="{% url 'register' %}" class="fw-bold text-decoration-none">Register as a Student</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

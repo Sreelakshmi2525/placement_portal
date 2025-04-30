@@ -1,0 +1,35 @@
+<!-- jobs/templates/jobs/department_confirm_delete.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Delete Department{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Delete Department</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <p>Are you sure you want to delete the department "{{ department.name }}"?</p>
+                
+                {% if department.jobs.count > 0 %}
+                <div class="alert alert-warning">
+                    <strong>Warning:</strong> This department has {{ department.jobs.count }} job(s) associated with it. 
+                    These associations will be removed.
+                </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <a href="{% url 'department_list' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

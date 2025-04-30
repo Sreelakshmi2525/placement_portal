@@ -1,0 +1,102 @@
+<!-- jobs/templates/jobs/view_application.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Application Details{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Application Details</h1>
+        <p class="lead">{{ application.student.user.get_full_name|default:application.student.user.username }} for {{ application.job.title }} at {{ application.job.company }}</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'application_list' %}" class="btn btn-secondary">Back to Applications</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>Application Information</h3>
+                <span class="badge {% if application.status == 'applied' %}bg-primary{% elif application.status == 'under_review' %}bg-info{% elif application.status == 'shortlisted' %}bg-warning{% elif application.status == 'rejected' %}bg-danger{% elif application.status == 'selected' %}bg-success{% endif %} fs-6">
+                    {{ application.get_status_display }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Applied Date</label>
+                    <p>{{ application.applied_date|date:"F d, Y, h:i A" }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Cover Letter</label>
+                    <div class="p-3 bg-light rounded">
+                        {{ application.cover_letter|linebreaks|default:"No cover letter provided." }}
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Update Status</label>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Change Status
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for status_value, status_name in application.STATUS_CHOICES %}
+                                {% if status_value != application.status %}
+                                <li>
+                                    <form method="post" action="{% url 'update_application_status' application.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="{{ status_value }}">
+                                        <button type="submit" class="dropdown-item">
+                                            Mark as {{ status_name }}
+                                        </button>
+                                    </form>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Student Information</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ application.student.user.get_full_name|default:application.student.user.username }}</p>
+                <p><strong>Roll Number:</strong> {{ application.student.roll_number }}</p>
+                <p><strong>Email:</strong> {{ application.student.user.email }}</p>
+                {% if application.student.department %}
+                <p><strong>Department:</strong> {{ application.student.department }}</p>
+                {% endif %}
+                {% if application.student.resume %}
+                <p><strong>Resume:</strong> <a href="{{ application.student.resume.url }}" target="_blank">View Resume</a></p>
+                {% else %}
+                <p><strong>Resume:</strong> Not uploaded</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3>Job Information</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Title:</strong> {{ application.job.title }}</p>
+                <p><strong>Company:</strong> {{ application.job.company }}</p>
+                <p><strong>Location:</strong> {{ application.job.location }}</p>
+                {% if application.job.salary %}
+                <p><strong>Salary:</strong> {{ application.job.salary }}</p>
+                {% endif %}
+                <a href="{% url 'job_detail' application.job.id %}" class="btn btn-info">View Job Details</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

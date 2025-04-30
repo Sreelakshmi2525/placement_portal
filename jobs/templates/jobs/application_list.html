@@ -1,0 +1,137 @@
+<!-- jobs/templates/jobs/application_list.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Student Applications{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Student Applications</h1>
+        <p class="lead">Track and manage student job applications.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>Filter Applications</h3>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-5">
+                        <label for="job" class="form-label">Job</label>
+                        <select name="job" id="job" class="form-select">
+                            <option value="">All Jobs</option>
+                            {% for job in jobs %}
+                            <option value="{{ job.id }}" {% if current_job_filter == job.id|stringformat:"s" %}selected{% endif %}>
+                                {{ job.title }} at {{ job.company }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-5">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">All Statuses</option>
+                            {% for status_value, status_name in STATUS_CHOICES %}
+                            <option value="{{ status_value }}" {% if current_status_filter == status_value %}selected{% endif %}>
+                                {{ status_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                {% if applications %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Job Position</th>
+                                    <th>Company</th>
+                                    <th>Applied On</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for app in applications %}
+                                <tr>
+                                    <td>
+                                        {{ app.student.user.get_full_name|default:app.student.user.username }}
+                                        <div class="small text-muted">{{ app.student.roll_number }}</div>
+                                    </td>
+                                    <td><a href="{% url 'job_detail' app.job.id %}">{{ app.job.title }}</a></td>
+                                    <td>{{ app.job.company }}</td>
+                                    <td>{{ app.applied_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        {% if app.status == 'applied' %}
+                                            <span class="badge bg-primary">Applied</span>
+                                        {% elif app.status == 'under_review' %}
+                                            <span class="badge bg-info">Under Review</span>
+                                        {% elif app.status == 'shortlisted' %}
+                                            <span class="badge bg-warning">Shortlisted</span>
+                                        {% elif app.status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% elif app.status == 'selected' %}
+                                            <span class="badge bg-success">Selected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="actionDropdown{{ app.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="actionDropdown{{ app.id }}">
+                                                <li><a class="dropdown-item" href="{% url 'view_application' app.id %}">View Details</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><h6 class="dropdown-header">Update Status</h6></li>
+                                                {% for status_value, status_name in STATUS_CHOICES %}
+                                                    {% if status_value != app.status %}
+                                                    <li>
+                                                        <form method="post" action="{% url 'update_application_status' app.id %}">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="status" value="{{ status_value }}">
+                                                            <button type="submit" class="dropdown-item">
+                                                                Mark as {{ status_name }}
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        No applications found with the current filters.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

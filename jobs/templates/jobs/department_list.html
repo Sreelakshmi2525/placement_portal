@@ -1,0 +1,61 @@
+<!-- jobs/templates/jobs/department_list.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Departments{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Departments</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'department_create' %}" class="btn btn-primary">Add Department</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Department Name</th>
+                                <th>Jobs</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for department in departments %}
+                            <tr>
+                                <td>{{ department.name }}</td>
+                                <td>
+                                    <a href="{% url 'department_jobs' department.id %}">
+                                        {{ department.jobs.count }} jobs
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'department_edit' department.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="{% url 'department_delete' department.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No departments found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

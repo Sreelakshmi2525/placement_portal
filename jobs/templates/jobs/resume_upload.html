@@ -1,0 +1,62 @@
+<!-- jobs/templates/jobs/resume_upload.html -->
+{% extends 'main/base.html' %}
+
+{% block title %}Upload Resume{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Upload Your Resume</h1>
+        <p class="lead">Upload your resume to help us match you with suitable jobs and analyze your fit.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Resume Upload</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_resume" class="form-label">Select Resume File</label>
+                        <input type="file" name="resume" id="id_resume" class="form-control" required>
+                        <div class="form-text">Supported formats: PDF, Word Document (.pdf, .docx, .doc)</div>
+                    </div>
+                    
+                    {% if student.resume %}
+                    <div class="mb-3">
+                        <p><strong>Current Resume:</strong> {{ student.resume.name|slice:"8:" }}</p>
+                        <div class="form-text">Uploading a new resume will replace your existing one.</div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Upload Resume</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3>Why Upload Your Resume?</h3>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Get personalized job match scores</li>
+                    <li>Identify skills you need to develop</li>
+                    <li>Make applying to jobs easier</li>
+                    <li>Help placement officers match you with opportunities</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
