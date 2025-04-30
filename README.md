@@ -4,7 +4,7 @@ A web-based Placement Portal developed using Django. This application serves as 
 
 ---
 
-## 📌 Features
+##  Features
 
 - Student login and registration
 - Admin dashboard to manage jobs and users
